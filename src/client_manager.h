@@ -5,6 +5,7 @@
 
 #include <sys/socket.h>
 #include <sys/types.h>
+#include <unistd.h>
 
 namespace client_side {
 class Client {
