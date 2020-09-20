@@ -16,5 +16,7 @@ public:
   Client(sockaddr addr, int fd);
   void inputToServer();
   std::string recvMessageFromServer();
+  int getFd();
+  void killClient();
 };
 } // namespace client_side

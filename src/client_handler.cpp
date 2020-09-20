@@ -2,12 +2,13 @@
 
 namespace server_side {
 void ClientHandlerTester::handleClient(const client_side::Client &client,
-                                       const std::istream &input,
-                                       const std::ostream &output) {}
+                                       const server_side::Server *server) {}
 
 void GraphClientHandler::handleClient(const client_side::Client &client,
-                                      const std::istream &input,
-                                      const std::ostream &output) {
+                                      const server_side::Server *server) {
+
+  // TODO change this method
+
   std::string buffer(1024, '\0');
   auto bytesRead = recv(m_clientFd, buffer.data(), buffer.length() - 1, 0);
   if (bytesRead < 0) {

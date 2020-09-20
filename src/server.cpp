@@ -22,7 +22,7 @@ void SerialServer::open(int port, const ClientHandler &handler) {
     // error
   }
 
-  if (listen(m_serverFd, NUM_OF_CLIENTS) < 0) {
+  if (listen(m_serverFd, SIZE_OF_BACKLOG) < 0) {
     close(m_serverFd);
     // error
   }
@@ -41,15 +41,25 @@ void SerialServer::connectClient() {
   m_client = client_side::Client(clientAddr, clientFd);
 }
 
-void SerialServer::handleClient() {
-  m_handler->handleClient(m_client, std::cin, std::cout);
+void SerialServer::handleClient() { m_handler->handleClient(m_client, this); }
+
+void SerialServer::killClient() { m_client.killClient(); }
+
+void SerialServer::sendMessage(std::string message) {
+  if (send(m_client.getFd(), message.data(), message.length(), 0) < 0) {
+    close(m_client.getFd());
+    // error
+  }
 }
 
-void SerialServer::sendMessage(std::string message) {}
-
-std::string SerialServer::recvMessage() {}
-
-void ParallelServer::open(int port, const ClientHandler &handler) {}
-
-void ParallelServer::kill() {}
+std::string SerialServer::recvMessage(uint32_t len) {
+  std::string message(len + 1, '\0');
+  auto nBytes = read(m_client.getFd(), message.data(), len);
+  if (nBytes < 0) {
+    close(m_client.getFd());
+    // error
+  }
+  message[nBytes] = '\0';
+  return message;
+}
 } // namespace server_side

@@ -8,17 +8,16 @@ namespace server_side {
 class ClientHandler {
 public:
   virtual void handleClient(const client_side::Client &client,
-                            const std::istream &input,
-                            const std::ostream &output) = 0;
+                            const server_side::Server *server) = 0;
 };
 
 class ClientHandlerTester : public ClientHandler {
   void handleClient(const client_side::Client &client,
-                    const std::istream &input, const std::ostream &output);
+                    const server_side::Server *server);
 };
 
 class GraphClientHandler : public ClientHandler {
   void handleClient(const client_side::Client &client,
-                    const std::istream &input, const std::ostream &output);
+                    const server_side::Server *server);
 };
 } // namespace server_side

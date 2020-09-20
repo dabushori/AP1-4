@@ -18,7 +18,7 @@
 #include <unistd.h>
 
 constexpr auto IP = "127.0.0.1";
-constexpr auto NUM_OF_CLIENTS = 10;
+constexpr auto SIZE_OF_BACKLOG = 3;
 constexpr auto DEFAULT_ALGORITHM = "A*";
 constexpr auto CLIENT_FIRST_INPUT = "solve path-graph-find";
 constexpr auto CLIENT_FIRST_INPUT_LEN = 21;
@@ -29,16 +29,15 @@ public:
   virtual void open(int port, const ClientHandler &handler) = 0;
   virtual void kill() = 0;
   virtual void connectClient() = 0;
+  virtual void handleClient() = 0;
   virtual void sendMessage(std::string message) = 0;
-  virtual std::string recvMessage() = 0;
+  virtual std::string recvMessage(uint32_t len) = 0;
 };
 
 class SerialServer : public Server {
 private:
   sockaddr m_server;
   int m_serverFd;
-  // sockaddr m_client;
-  // int m_clientFd;
   client_side::Client m_client;
   std::unique_ptr<ClientHandler> m_handler;
 
@@ -47,8 +46,9 @@ public:
   void kill();
   void connectClient();
   void handleClient();
+  void killClient();
   void sendMessage(std::string message);
-  std::string recvMessage();
+  std::string recvMessage(uint32_t len);
 };
 
 class ParallelServer : public Server {
