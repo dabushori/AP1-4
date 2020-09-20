@@ -11,5 +11,13 @@ void Client::inputToServer() {
   }
 }
 
-std::string Client::recvMessageFromServer() {}
+std::string Client::recvMessageFromServer() {
+  std::string output(1024,  '\0');
+  const auto bytesRead = recv(m_fd, output.data(), output.length() - 1);
+  if (bytesRead < 0) {
+    // error
+  }
+  output[bytesRead] = '\0';
+  return output;
+}
 } // namespace client_side
