@@ -45,6 +45,6 @@ namespace server_side {
     }
 
     void SerialServer::killServer() const {
-
+        close(m_serverFd);
     }
 } // namespace server_side
