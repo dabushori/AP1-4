@@ -18,6 +18,7 @@
 #include <unistd.h>
 #include <thread>
 #include <queue>
+#include <mutex>
 
 
 constexpr auto IP = "127.0.0.1";
@@ -29,22 +30,58 @@ constexpr auto CLIENT_FIRST_INPUT_LEN = 21;
 
 namespace server_side {
 class Server {
+  protected:
+  int m_serverFd;
+  sockaddr_in m_addr;
 public:
-  virtual void open(const int port, const ClientHandler *c) = 0;
-  virtual void handleTheClient(const ClientHandler *c, const client_side::Client &client) const =0;
-  virtual void talkWithClients(const ClientHandler *c) const = 0;
-  virtual void killServer() const = 0;
+/**
+ * @brief open the server with the current port.
+ * 
+ * @param port the port of the server
+ * @param c a ClientHandle pointer that deal with a client
+ */
+  virtual void open(const int port, const ClientHandler *c);
+  /**
+   * @brief connect the server to clients and solve their problems
+   * 
+   * @param c a ClientHandler pointer that deal with a client
+   */
+  virtual void talkWithClients(const ClientHandler *c) = 0;
+  /**
+   * @brief close the server.
+   * 
+   */
+  virtual void killServer() const;
+};
+
+class ParallelServer : public Server {
+  private:
+  std::queue<client_side::Client> m_clients;
+  std::unique_lock<std::mutex> m_mutex;
+  std::condition_variable m_queueEmpty;
+public:
+/**
+ * @brief the function is used inorder to use the same threads
+ * int the thread pool.
+ * 
+ * @param c a clientHandler pointer that deal with a client
+ */
+  void threadFunction(const ClientHandler *c);
+  /**
+   * @brief connect the server to one client at a time and solve his problem.
+   * 
+   * @param c a ClientHandler pointer that deal with a client
+   */
+  void talkWithClients(const ClientHandler *c);
 };
 
 class SerialServer : public Server {
-private:
-  int m_serverFd;
-  sockaddr_in m_addr;
-
 public:
-  void open(const int port, const ClientHandler *c);
-  void handleTheClient(const ClientHandler *c, const client_side::Client &client) const;
-  void talkWithClients(const ClientHandler *c) const;
-  void killServer() const;
+  /**
+   * @brief connect the server to multiply clients at once and solve their problems
+   * 
+   * @param c a ClientHandler pointer that deal with a client
+   */
+  void talkWithClients(const ClientHandler *c);
 };
 } // namespace server_side

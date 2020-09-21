@@ -1,7 +1,7 @@
 #pragma once
 
 #include "client_manager.h"
-
+#include "solver_manager.h"
 
 namespace server_side {
   class ClientHandler {
@@ -11,7 +11,7 @@ namespace server_side {
 
   class TestClientHandler : ClientHandler {
     private:
-      Solver m_solver;
+      solver_side::Solver m_solver;
     public:
     void handleClient(const client_side::Client) const;
   };
