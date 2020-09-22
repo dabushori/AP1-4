@@ -50,7 +50,7 @@ void ParallelServer::talkWithClients(const ClientHandler *c) {
       close(m_serverFd);
       // error
     }
-    client_side::Client client(clientAddr, clientFd);
+    client_side::Client client(clientFd);
     m_mutex.lock();
     m_queueEmpty.notify_one();
     m_clients.push(client);
@@ -71,7 +71,7 @@ void SerialServer::talkWithClients(const ClientHandler *c) {
       close(m_serverFd);
       // error
     }
-    client_side::Client client(clientAddr, clientFd);
+    client_side::Client client(clientFd);
     c->handleClient(client);
   }
   killServer();

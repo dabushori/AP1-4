@@ -1,18 +1,24 @@
 #include "client_manager.h"
 
 namespace client_side {
-Client::Client(sockaddr addr, int fd) : m_socket(addr), m_fd(fd) {}
+Client::Client(int fd) : m_fd(fd) {}
 
-void Client::inputToServer() {
-  std::string input;
-  getline(std::cin, input);
-  if (send(m_fd, input.data(), input.length(), 0) < 0) {
+int Client::inputToServer() const{
+  std::string line, sendInput;
+  getline(std::cin, line);
+  while (line != "\r\n" ) {
+    sendInput += line;
+    sendInput += ";";
+    getline(std::cin, line);
+  }
+  if (send(m_fd, sendInput.data(), sendInput.length(), 0) < 0) {
     // error
   }
+  return sendInput.length();
 }
 
-std::string Client::recvMessageFromServer() {
-  std::string output(1024, '\0');
+std::string Client::recvMessageFromServer(const int outputLength) const{
+  std::string output(outputLength, '\0');
   const auto bytesRead = recv(m_fd, output.data(), output.length() - 1, 0);
   if (bytesRead < 0) {
     // error
@@ -21,7 +27,7 @@ std::string Client::recvMessageFromServer() {
   return output;
 }
 
-int Client::getFd() { return m_fd; }
+int Client::getFd() const { return m_fd; }
 
-void Client::killClient() { close(m_fd); }
+void Client::killClient() const { close(m_fd); }
 } // namespace client_side

@@ -1,18 +1,55 @@
 #pragma once
 
 #include "client_manager.h"
-#include "solver_manager.h"
+#include "server.h"
 
 namespace server_side {
   class ClientHandler {
+    protected:
+    int m_serverFd;
+        /**
+     * @brief recieve a message from the client. 
+     * 
+     * @param outputLength - length of the message
+     * @return std::string - the message
+     */
+    virtual std::string recvMessageFromClient(const int outputLength) const = 0;
     public:
-    virtual void handleClient(const client_side::Client) const = 0;
+    /**
+     * @brief Construct a new Client Handler object
+     * 
+     * @param serverFd the file descriptor of the server
+     */
+    ClientHandler(const int serverFd);
+    /**
+     * @brief talk with the client and solve his problem
+     * 
+     * @param client the client that the server talk with
+     */
+    virtual void handleClient(const client_side::Client client) const = 0;
   };
 
   class TestClientHandler : ClientHandler {
-    private:
-      solver_side::Solver m_solver;
+    protected:
+    /**
+     * @brief recieve a message from the client. 
+     * 
+     * @param outputLength - length of the message
+     * @return std::string - the message
+     */
+    std::string recvMessageFromClient(const int outputLength) const;
     public:
-    void handleClient(const client_side::Client) const;
+    /**
+     * @brief Construct a new Test Client Handler object
+     * 
+     * @param serverFd the file descriptor of the server
+     */
+    TestClientHandler(const int serverFd);
+    /**
+     * @brief talk with the client and solve his problem
+     * 
+     * @param client the client that the server talk with
+     */
+    void handleClient(const client_side::Client &client) const;
   };
 } // namespace server_side
