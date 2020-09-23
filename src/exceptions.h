@@ -3,7 +3,14 @@
 #include <exception>
 
 namespace exceptions {
-enum class Status { success, noSolution, wrongMatrix, wrongInput };
+enum class Status {
+  success,
+  noSolution,
+  wrongMatrix,
+  wrongInput,
+  noCacheDir,
+  cacheFileError
+};
 
 class StatusException : public std::exception {
 private:
