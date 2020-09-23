@@ -4,11 +4,11 @@ namespace server_side {
 
 ClientHandler::ClientHandler(const int &serverFd) : m_serverFd(serverFd) {}
 
-TestClientHandler::TestClientHandler(const int &serverFd)
+GraphClientHandler::GraphClientHandler(const int &serverFd)
     : ClientHandler(serverFd) {}
 
 std::string
-TestClientHandler::recvMessageFromClient(const int &outputLength) const {
+GraphClientHandler::recvMessageFromClient(const int &outputLength) const {
   std::string output(outputLength, '\0');
   const auto bytesRead =
       recv(m_serverFd, output.data(), output.length() - 1, 0);
@@ -19,8 +19,8 @@ TestClientHandler::recvMessageFromClient(const int &outputLength) const {
   return output;
 }
 
-std::string TestClientHandler::formatAnswer(const std::string &answer,
-                                            const int &status) const {
+std::string GraphClientHandler::formatAnswer(const std::string &answer,
+                                             const int &status) const {
   std::string format = "Version: 1.0\r\nStatus: ";
   format += std::to_string(status);
   format += "\r\n";
@@ -31,7 +31,7 @@ std::string TestClientHandler::formatAnswer(const std::string &answer,
   format += "\r\n";
   return format;
 }
-void TestClientHandler::handleClient(const client_side::Client &client) const {
+void GraphClientHandler::handleClient(const client_side::Client &client) const {
   int commandLength = client.inputToServer();
   std::string command = recvMessageFromClient(commandLength), msg = "";
   int status = static_cast<int>(exceptions::Status::success);
@@ -58,12 +58,11 @@ void TestClientHandler::handleClient(const client_side::Client &client) const {
   send(m_serverFd, firstAnswer.data(), firstAnswer.length(), 0);
   std::string result = "";
   try {
-  client.recvMessageFromServer(msg.length());
-  int matrixLength = client.inputToServer();
-  std::string matrix = recvMessageFromClient(matrixLength);
-  result = algorithms::searchInGraph(algo, matrix);
-  }
-  catch (exceptions::StatusException &e) {
+    client.recvMessageFromServer(msg.length());
+    int matrixLength = client.inputToServer();
+    std::string matrix = recvMessageFromClient(matrixLength);
+    result = algorithms::searchInGraph(algo, matrix);
+  } catch (exceptions::StatusException &e) {
     status = e.getStatus();
     std::string finalAnswer = formatAnswer(result, status);
     send(m_serverFd, finalAnswer.data(), finalAnswer.length(), 0);

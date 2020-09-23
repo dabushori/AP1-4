@@ -60,6 +60,10 @@ void ParallelServer::talkWithClients(ClientHandler *c) {
 
 void Server::killServer() const { close(m_serverFd); }
 
+int Server::getFD() const {
+  return m_serverFd;
+}
+
 void SerialServer::talkWithClients(const ClientHandler *c) {
   while (true) {
     socklen_t clientLen = 0;

@@ -44,7 +44,7 @@ public:
   ClientHandler &operator=(ClientHandler &&) = default;
 };
 
-class TestClientHandler : public ClientHandler {
+class GraphClientHandler : public ClientHandler {
 protected:
   /**
    * @brief recieve a message from the client.
@@ -56,11 +56,11 @@ protected:
 
 public:
   /**
-   * @brief Construct a new Test Client Handler object
+   * @brief Construct a new Graph Client Handler object
    *
    * @param serverFd the file descriptor of the server
    */
-  TestClientHandler(const int &serverFd);
+  GraphClientHandler(const int &serverFd);
   /**
    * @brief talk with the client and solve his problem
    *
