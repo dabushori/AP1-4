@@ -42,7 +42,6 @@ void ParallelServer::talkWithClients(const ClientHandler *c) {
   }
 
   while (true) {
-    const auto addrSize = sizeof(sockaddr);
     socklen_t clientLen = 0;
     sockaddr clientAddr{};
     auto clientFd = accept(m_serverFd, &clientAddr, &clientLen);
@@ -63,7 +62,6 @@ void Server::killServer() const { close(m_serverFd); }
 
 void SerialServer::talkWithClients(const ClientHandler *c) {
     while (true) {
-    const auto addrSize = sizeof(sockaddr);
     socklen_t clientLen = 0;
     sockaddr clientAddr{};
     auto clientFd = accept(m_serverFd, &clientAddr, &clientLen);

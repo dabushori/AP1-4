@@ -29,9 +29,15 @@ namespace server_side {
      * @param client the client that the server talk with
      */
     virtual void handleClient(const client_side::Client &client) const = 0;
+
+    virtual ~ClientHandler() = default;
+    ClientHandler(const ClientHandler &) = default;
+    ClientHandler &operator=(const ClientHandler &) = default;
+    ClientHandler(ClientHandler &&) = default;
+    ClientHandler &operator=(ClientHandler &&) = default;
   };
 
-  class TestClientHandler : ClientHandler {
+  class TestClientHandler : public ClientHandler {
     protected:
     /**
      * @brief recieve a message from the client. 

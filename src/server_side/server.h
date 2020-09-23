@@ -40,7 +40,7 @@ public:
    * @param port the port of the server
    * @param c a ClientHandle pointer that deal with a client
    */
-  virtual void open(const int port, const ClientHandler *c);
+  virtual void open(const int port,const ClientHandler *c);
   /**
    * @brief connect the server to clients and solve their problems
    *
@@ -52,6 +52,12 @@ public:
    *
    */
   virtual void killServer() const;
+  // no use just for the rule of 5
+  virtual ~Server() = default;
+  Server(const Server &) = default;
+  Server &operator=(const Server &) = default;
+  Server(Server &&) = default;
+  Server &operator=(Server &&) = default;
 };
 
 class ParallelServer : public Server {

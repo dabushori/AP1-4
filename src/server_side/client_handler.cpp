@@ -47,7 +47,7 @@ void TestClientHandler::handleClient(const client_side::Client &client) const {
     } else if (!std::regex_search(algo, algoCheck)) {
       throw exceptions::StatusException(exceptions::Status::wrongInput);
     }
-  } catch (exceptions::StatusException e) {
+  } catch (exceptions::StatusException &e) {
     status = e.getStatus();
     std::string firstAnswer = formatAnswer(msg, status);
     send(m_serverFd, firstAnswer.data(), firstAnswer.length(), 0);
@@ -63,7 +63,7 @@ void TestClientHandler::handleClient(const client_side::Client &client) const {
   std::string matrix = recvMessageFromClient(matrixLength);
   result = algorithms::searchInGraph(algo, matrix);
   }
-  catch (exceptions::StatusException e) {
+  catch (exceptions::StatusException &e) {
     status = e.getStatus();
     std::string finalAnswer = formatAnswer(result, status);
     send(m_serverFd, finalAnswer.data(), finalAnswer.length(), 0);
