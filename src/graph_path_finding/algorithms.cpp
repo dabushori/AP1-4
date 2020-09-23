@@ -39,7 +39,8 @@ Graph::Graph(std::vector<std::vector<int>> graph, uint32_t height,
   m_graph = nodes;
 }
 GraphNode *Graph::operator()(const int &i, const int &j) {
-  if (0 <= i && i < m_height && 0 <= j && j < m_width) {
+  if (0 <= i && i < static_cast<int>(m_height) && 0 <= j &&
+      j < static_cast<int>(m_width)) {
     return &(m_graph[i][j]);
   }
   return nullptr;
@@ -48,7 +49,6 @@ std::vector<GraphNode *> Graph::getNeighbors(GraphNode *current) {
   std::vector<GraphNode *> neighbors;
   auto i = current->getRowIndex(), j = current->getColIndex();
   GraphNode *curr;
-  int index;
   curr = (*this)(i - 1, j);
   if (curr != nullptr && curr->getCost() != -1) {
     neighbors.push_back(curr);
@@ -97,14 +97,6 @@ bool AStar::AStarComperator::operator()(const GraphNode &n1,
   return n1.getDist() > n2.getDist();
 }
 
-void AStar::updateDist(GraphNode *node, const int &newDist, Graph *g) {
-  node->setDist(newDist);
-  auto index = findInClosed(*node);
-  if (index != -1) {
-    m_closed[index].setDist(newDist);
-  }
-  (*g)(node->getRowIndex(), node->getColIndex())->setDist(newDist);
-}
 uint32_t AStar::findInClosed(const GraphNode &current) {
   int i = 0;
   for (auto it = m_closed.begin(); it != m_closed.end(); ++it, ++i) {
@@ -216,7 +208,7 @@ std::vector<std::vector<int>> textToMat(const std::vector<std::string> &text) {
                                        [](const char &c) { return c == ','; }) +
                          1;
     if (numOfvals != width) {
-      throw exceptions::StatusExceptions(exceptions::Status::wrongMatrix);
+      throw exceptions::StatusException(exceptions::Status::wrongMatrix);
     }
   }
 
@@ -255,12 +247,13 @@ std::vector<std::vector<int>> parseMatrix(std::string &matrix) {
   matrix = (lines[lines.size() - 2] + ";" + lines[lines.size() - 1]);
 
   auto sizes = lines[0];
-  sep = sizes.find_first_of(',');
+  auto sep = sizes.find_first_of(',');
   int height = std::stoi(sizes.substr(0, sizes.length() - sep - 1));
   int width = std::stoi(sizes.substr(sep + 1));
   auto actualMat = textToMat(vals);
-  if (actualMat.size() != height || actualMat[0].size() != width) {
-    throw exceptions::StatusExceptions(exceptions::Status::wrongMatrix);
+  if (static_cast<int>(actualMat.size()) != height ||
+      static_cast<int>(actualMat[0].size()) != width) {
+    throw exceptions::StatusException(exceptions::Status::wrongMatrix);
   }
   return actualMat;
 }

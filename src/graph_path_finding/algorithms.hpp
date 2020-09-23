@@ -64,6 +64,12 @@ protected:
   DS m_opened;
 
 public:
+  Searcher() = default;
+  virtual ~Searcher() = default;
+  Searcher(const Searcher &) = default;
+  Searcher &operator=(const Searcher &) = default;
+  Searcher(Searcher &&) = default;
+  Searcher &operator=(Searcher &&) = default;
   void addToOpened(GraphNode *node) { m_opened.push(*node); }
   virtual GraphNode removeFromOpened() = 0;
   bool isDSEmpty() { return m_opened.empty(); }
@@ -162,9 +168,6 @@ public:
   void removeFromPQ(std::priority_queue<GraphNode, std::vector<GraphNode>,
                                         AStar::AStarComperator> *pq,
                     GraphNode *node);
-  void updateDist(GraphNode *node, const int &newDist, Graph *g);
-  void updateCost(GraphNode *node, const uint32_t &newCost, Graph *g);
-  void updateSource(GraphNode *node, const uint32_t &src, Graph *g);
   uint32_t findInClosed(const GraphNode &current);
   bool isNeighbors(GraphNode *node1, GraphNode *node2);
   std::vector<GraphNode> search(Graph *graph, GraphNode *start, GraphNode *end);

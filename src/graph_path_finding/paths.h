@@ -1,5 +1,7 @@
 #pragma once
 
+#include "exceptions.h"
+
 #include <filesystem>
 #include <string>
 

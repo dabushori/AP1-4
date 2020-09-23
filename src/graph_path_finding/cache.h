@@ -1,6 +1,7 @@
 #pragma once
 
 #include "paths.h"
+#include "exceptions.h"
 
 #include <filesystem>
 #include <fstream>
