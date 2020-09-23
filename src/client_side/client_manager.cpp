@@ -12,19 +12,21 @@ int Client::inputToServer() const{
     getline(std::cin, line);
   }
   if (send(m_fd, sendInput.data(), sendInput.length(), 0) < 0) {
-    // error
+    close(m_fd);
+    throw std::system_error(errno, std::system_category());
   }
   return sendInput.length();
 }
 
-std::string Client::recvMessageFromServer(const int outputLength) const{
-  std::string output(outputLength, '\0');
+void Client::recvMessageFromServer(const int outputLength) const{
+  std::string output(outputLength + 1, '\0');
   const auto bytesRead = recv(m_fd, output.data(), output.length() - 1, 0);
   if (bytesRead < 0) {
-    // error
+    close(m_fd);
+    throw std::system_error(errno, std::system_category());
   }
   output[bytesRead] = '\0';
-  return output;
+  std::cout << output << std::endl;
 }
 
 int Client::getFd() const { return m_fd; }

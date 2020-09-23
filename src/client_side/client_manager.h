@@ -27,12 +27,11 @@ public:
    */
   int inputToServer() const;
   /**
-   * @brief the function recieve a message from the server and return it.
+   * @brief the function recieve a message from the server and print it.
    * 
    * @param outputLength the length of the message
-   * @return std::string - the message
    */
-  std::string recvMessageFromServer(const int outputLength) const;
+  void recvMessageFromServer(const int outputLength) const;
   /**
    * @brief Get the Fd object
    * 

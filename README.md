@@ -9,6 +9,14 @@
   * ParallelServer - multiple users at a time. (with treads)
 * The server deal with every user problem using a ClientHandler interface that has an implementions for each server and our implemention uses function that uses algorithms.cpp functions to solve the problem in handleClient.
 * * *
+## Exceptions:
+* Status: 0 - success
+* Status: 1 - noSolution
+* Status: 2 - wrongMatrix
+* Status: 3 - wrongInput
+* Status: 4 - noCacheDir
+* Status: 5 - cacheFileError
+* * *
 ## Files:
 * server.h + server.cpp
 * client_manager.h + client_manager.cpp

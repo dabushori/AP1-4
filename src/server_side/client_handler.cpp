@@ -9,11 +9,12 @@ GraphClientHandler::GraphClientHandler(const int &serverFd)
 
 std::string
 GraphClientHandler::recvMessageFromClient(const int &outputLength) const {
-  std::string output(outputLength, '\0');
+  std::string output(outputLength + 1, '\0');
   const auto bytesRead =
       recv(m_serverFd, output.data(), output.length() - 1, 0);
   if (bytesRead < 0) {
-    // error
+    close(m_serverFd);
+    throw std::system_error(errno, std::system_category());
   }
   output[bytesRead] = '\0';
   return output;
@@ -51,11 +52,13 @@ void GraphClientHandler::handleClient(const client_side::Client &client) const {
     status = e.getStatus();
     std::string firstAnswer = formatAnswer(msg, status);
     send(m_serverFd, firstAnswer.data(), firstAnswer.length(), 0);
+    client.recvMessageFromServer(firstAnswer.length());
     client.killClient();
     return;
   }
   std::string firstAnswer = formatAnswer(msg, status);
   send(m_serverFd, firstAnswer.data(), firstAnswer.length(), 0);
+  client.recvMessageFromServer(firstAnswer.length());
   std::string result = "";
   try {
     client.recvMessageFromServer(msg.length());
@@ -66,11 +69,13 @@ void GraphClientHandler::handleClient(const client_side::Client &client) const {
     status = e.getStatus();
     std::string finalAnswer = formatAnswer(result, status);
     send(m_serverFd, finalAnswer.data(), finalAnswer.length(), 0);
+    client.recvMessageFromServer(finalAnswer.length());
     client.killClient();
     return;
   }
   std::string finalAnswer = formatAnswer(result, status);
   send(m_serverFd, finalAnswer.data(), finalAnswer.length(), 0);
+  client.recvMessageFromServer(finalAnswer.length());
   client.killClient();
 }
 } // namespace server_side

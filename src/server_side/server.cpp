@@ -4,7 +4,7 @@ namespace server_side {
 void Server::open(const int port, ClientHandler *c) {
   m_serverFd = socket(AF_INET, SOCK_STREAM, 0);
   if (m_serverFd < 0) {
-    // error
+    throw std::system_error(errno, std::system_category());
   }
   m_addr = sockaddr_in{};
   m_addr.sin_family = AF_INET;
@@ -13,11 +13,11 @@ void Server::open(const int port, ClientHandler *c) {
   if (bind(m_serverFd, reinterpret_cast<sockaddr *>(&m_addr), sizeof(m_addr)) <
       0) {
     close(m_serverFd);
-    // error
+    throw std::system_error(errno, std::system_category());
   }
   if (listen(m_serverFd, BACKLOG_SIZE) < 0) {
     close(m_serverFd);
-    // error
+    throw std::system_error(errno, std::system_category());
   }
   talkWithClients(c);
 }
@@ -47,7 +47,7 @@ void ParallelServer::talkWithClients(ClientHandler *c) {
     auto clientFd = accept(m_serverFd, &clientAddr, &clientLen);
     if (clientFd < 0) {
       close(m_serverFd);
-      // error
+      throw std::system_error(errno, std::system_category());
     }
     client_side::Client client(clientFd);
     m_mutex.lock();
@@ -69,7 +69,7 @@ void SerialServer::talkWithClients(ClientHandler *c) {
     auto clientFd = accept(m_serverFd, &clientAddr, &clientLen);
     if (clientFd < 0) {
       close(m_serverFd);
-      // error
+      throw std::system_error(errno, std::system_category());
     }
     client_side::Client client(clientFd);
     c->handleClient(client);
