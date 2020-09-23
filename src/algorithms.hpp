@@ -1,6 +1,7 @@
 #pragma once
 
 #include "cache.h"
+#include "exceptions.h"
 
 #include <algorithm>
 #include <iostream>

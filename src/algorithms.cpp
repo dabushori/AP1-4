@@ -216,7 +216,7 @@ std::vector<std::vector<int>> textToMat(const std::vector<std::string> &text) {
                                        [](const char &c) { return c == ','; }) +
                          1;
     if (numOfvals != width) {
-      // error
+      throw exceptions::StatusExceptions(exceptions::Status::wrongMatrix);
     }
   }
 
@@ -253,7 +253,16 @@ std::vector<std::vector<int>> parseMatrix(std::string &matrix) {
   }
   std::vector<std::string> vals(lines.begin() + 1, lines.end() - 2);
   matrix = (lines[lines.size() - 2] + ";" + lines[lines.size() - 1]);
-  return textToMat(vals);
+
+  auto sizes = lines[0];
+  sep = sizes.find_first_of(',');
+  int height = std::stoi(sizes.substr(0, sizes.length() - sep - 1));
+  int width = std::stoi(sizes.substr(sep + 1));
+  auto actualMat = textToMat(vals);
+  if (actualMat.size() != height || actualMat[0].size() != width) {
+    throw exceptions::StatusExceptions(exceptions::Status::wrongMatrix);
+  }
+  return actualMat;
 }
 
 std::string parseNeighborsLocation(const GraphNode &src,
@@ -299,7 +308,7 @@ std::string searchInGraph(std::string algorithm, std::string matrix) {
   Graph graph(parsedMatrix, parsedMatrix.size(), parsedMatrix[0].size());
   if (graph(startX, startY)->getCost() == -1 ||
       graph(endX, endY)->getCost() == -1) {
-    // no path
+    throw exceptions::StatusException(exceptions::Status::noSolution);
   }
   if (start == end) {
     return "0," + algorithm;
@@ -318,11 +327,11 @@ std::string searchInGraph(std::string algorithm, std::string matrix) {
     AStar astar;
     result = astar.search(&graph, graph(startX, startY), graph(endX, endY));
   } else {
-    // error
+    throw exceptions::StatusException(exceptions::Status::wrongInput);
   }
 
   if (result == std::vector<GraphNode>()) {
-    // error
+    throw exceptions::StatusException(exceptions::Status::noSolution);
   }
 
   int cost = 0;
@@ -341,23 +350,3 @@ std::string searchInGraph(std::string algorithm, std::string matrix) {
   return message;
 }
 } // namespace algorithms
-
-int main() {
-  using namespace algorithms;
-
-  std::string matrix = "3,3;1,b,3;4,5,b;7,9,8;2,2;0,0;";
-  auto copy = matrix;
-
-  std::cout << "the matrix:" << std::endl;
-  for (auto row : parseMatrix(copy)) {
-    for (auto cell : row) {
-      std::cout << cell << " ";
-    }
-    std::cout << std::endl;
-  }
-
-  std::cout << searchInGraph("BFS", matrix) << std::endl;
-  std::cout << searchInGraph("DFS", matrix) << std::endl;
-  std::cout << searchInGraph("BestFS", matrix) << std::endl;
-  std::cout << searchInGraph("A*", matrix) << std::endl;
-}

@@ -15,7 +15,7 @@ void Cache::save(std::string algorithm, std::string problem,
                  std::string solution) {
   std::ofstream cacheOut(m_cacheFile, std::ios::app);
   if (!cacheOut) {
-    // error
+    throw exceptions::StatusException(exceptions::Status::cacheFileError);
   }
   cacheOut << algorithm << ";" << problem << std::endl;
   cacheOut << solution << std::endl;
@@ -26,7 +26,7 @@ std::string Cache::searchSolutionFor(std::string algorithm,
                                      std::string problem) {
   std::ifstream cacheIn(m_cacheFile);
   if (!cacheIn) {
-    // error
+    throw exceptions::StatusException(exceptions::Status::cacheFileError);
   }
   std::string searched = algorithm + ";" + problem;
   std::string currentLine;

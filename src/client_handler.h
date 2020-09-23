@@ -3,6 +3,7 @@
 #include "client_manager.h"
 #include "server.h"
 #include "algorithms.hpp"
+#include "exceptions.h"
 
 namespace server_side {
   class ClientHandler {
@@ -52,6 +53,13 @@ namespace server_side {
      * @param client the client that the server talk with
      */
     void handleClient(const client_side::Client &client) const;
+    /**
+     * @brief 
+     * 
+     * @param answer 
+     * @param status 
+     * @return std::string 
+     */
     std::string formatAnswer(const std::string &answer, const int &status) const;
   };
 } // namespace server_side

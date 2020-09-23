@@ -17,6 +17,6 @@ std::string findPathToCacheDirectory(const std::string &workingDirectory) {
       return path;
     }
   }
-  return "error";
+  throw exceptions::StatusException(exceptions::Status::noCacheDir);
 }
 } // namespace paths
