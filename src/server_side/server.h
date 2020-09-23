@@ -49,10 +49,11 @@ public:
   virtual void killServer() const;
   /**
    * @brief get the FD of the server
-   * 
+   *
    * @return int the FD of the server
    */
   int getFD() const;
+  Server() = default;
   // no use just for the rule of 5
   virtual ~Server() = default;
   Server(const Server &) = default;
@@ -94,6 +95,7 @@ public:
    *
    * @param c a ClientHandler pointer that deal with a client
    */
-  void talkWithClients(const ClientHandler *c);
+  void talkWithClients(ClientHandler *c);
+  SerialServer() = default;
 };
 } // namespace server_side
