@@ -97,15 +97,6 @@ bool AStar::AStarComperator::operator()(const GraphNode &n1,
   return n1.getDist() > n2.getDist();
 }
 
-uint32_t AStar::findInClosed(const GraphNode &current) {
-  int i = 0;
-  for (auto it = m_closed.begin(); it != m_closed.end(); ++it, ++i) {
-    if (*it == current) {
-      return i;
-    }
-  }
-  return -1;
-}
 void AStar::removeFromPQ(std::priority_queue<GraphNode, std::vector<GraphNode>,
                                              AStar::AStarComperator> *pq,
                          GraphNode *node) {
