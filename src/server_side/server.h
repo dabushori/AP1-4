@@ -3,29 +3,24 @@
 #include "client_handler.h"
 #include "client_manager.h"
 
-#include <iostream>
-#include <memory>
-#include <regex>
-#include <string>
-#include <vector>
-
 #include <algorithm>
 #include <arpa/inet.h>
 #include <errno.h>
+#include <iostream>
+#include <memory>
 #include <mutex>
 #include <queue>
+#include <string>
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <system_error>
 #include <thread>
 #include <unistd.h>
+#include <vector>
 
 constexpr auto IP = "127.0.0.1";
 constexpr auto BACKLOG_SIZE = 30;
 constexpr auto THREAD_POOL_SIZE = 5;
-constexpr auto DEFAULT_ALGORITHM = "A*";
-constexpr auto CLIENT_FIRST_INPUT = "solve path-graph-find";
-constexpr auto CLIENT_FIRST_INPUT_LEN = 21;
 
 namespace server_side {
 class Server {
@@ -40,13 +35,13 @@ public:
    * @param port the port of the server
    * @param c a ClientHandle pointer that deal with a client
    */
-  virtual void open(const int port,const ClientHandler *c);
+  virtual void open(const int port, ClientHandler *c);
   /**
    * @brief connect the server to clients and solve their problems
    *
    * @param c a ClientHandler pointer that deal with a client
    */
-  virtual void talkWithClients(const ClientHandler *c) = 0;
+  virtual void talkWithClients(ClientHandler *c) = 0;
   /**
    * @brief close the server.
    *
@@ -61,6 +56,8 @@ public:
 };
 
 class ParallelServer : public Server {
+  friend void threadFunction(ParallelServer *server, ClientHandler *c);
+
 private:
   std::queue<client_side::Client> m_clients;
   std::unique_lock<std::mutex> m_mutex;
@@ -68,19 +65,20 @@ private:
 
 public:
   /**
-   * @brief the function is used inorder to use the same threads
-   * int the thread pool.
-   *
-   * @param c a clientHandler pointer that deal with a client
-   */
-  void threadFunction(const ClientHandler *c);
-  /**
    * @brief connect the server to one client at a time and solve his problem.
    *
    * @param c a ClientHandler pointer that deal with a client
    */
-  void talkWithClients(const ClientHandler *c);
+  void talkWithClients(ClientHandler *c);
 };
+
+/**
+ * @brief the function is used inorder to use the same threads
+ * int the thread pool.
+ *
+ * @param c a clientHandler pointer that deal with a client
+ */
+void threadFunction(ParallelServer *server, ClientHandler *c);
 
 class SerialServer : public Server {
 public:

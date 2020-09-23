@@ -1,7 +1,7 @@
 #include "server.h"
 
 namespace server_side {
-void Server::open(const int port, const ClientHandler *c) {
+void Server::open(const int port, ClientHandler *c) {
   m_serverFd = socket(AF_INET, SOCK_STREAM, 0);
   if (m_serverFd < 0) {
     // error
@@ -22,23 +22,23 @@ void Server::open(const int port, const ClientHandler *c) {
   talkWithClients(c);
 }
 
-void ParallelServer::threadFunction(const ClientHandler *c) {
+void threadFunction(ParallelServer *server, ClientHandler *c) {
   while (true) {
-    m_mutex.lock();
-    m_queueEmpty.wait(m_mutex);
-    if (!m_clients.empty()) {
-      client_side::Client client = m_clients.front();
-      m_clients.pop();
-      m_mutex.unlock();
+    server->m_mutex.lock();
+    server->m_queueEmpty.wait(server->m_mutex);
+    if (!server->m_clients.empty()) {
+      client_side::Client client = server->m_clients.front();
+      server->m_clients.pop();
+      server->m_mutex.unlock();
       c->handleClient(client);
     }
   }
 }
 
-void ParallelServer::talkWithClients(const ClientHandler *c) {
+void ParallelServer::talkWithClients(ClientHandler *c) {
   std::thread threadPool[THREAD_POOL_SIZE];
   for (int i = 0; i < THREAD_POOL_SIZE; i++) {
-    threadPool[i] = std::thread(threadFunction, c);
+    threadPool[i] = std::thread(threadFunction, this, c);
   }
 
   while (true) {
@@ -61,7 +61,7 @@ void ParallelServer::talkWithClients(const ClientHandler *c) {
 void Server::killServer() const { close(m_serverFd); }
 
 void SerialServer::talkWithClients(const ClientHandler *c) {
-    while (true) {
+  while (true) {
     socklen_t clientLen = 0;
     sockaddr clientAddr{};
     auto clientFd = accept(m_serverFd, &clientAddr, &clientLen);
