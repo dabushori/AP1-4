@@ -2,6 +2,7 @@
 
 #include "client_manager.h"
 #include "server.h"
+#include "algorithms.hpp"
 
 namespace server_side {
   class ClientHandler {
@@ -13,20 +14,20 @@ namespace server_side {
      * @param outputLength - length of the message
      * @return std::string - the message
      */
-    virtual std::string recvMessageFromClient(const int outputLength) const = 0;
+    virtual std::string recvMessageFromClient(const int &outputLength) const = 0;
     public:
     /**
      * @brief Construct a new Client Handler object
      * 
      * @param serverFd the file descriptor of the server
      */
-    ClientHandler(const int serverFd);
+    ClientHandler(const int &serverFd);
     /**
      * @brief talk with the client and solve his problem
      * 
      * @param client the client that the server talk with
      */
-    virtual void handleClient(const client_side::Client client) const = 0;
+    virtual void handleClient(const client_side::Client &client) const = 0;
   };
 
   class TestClientHandler : ClientHandler {
@@ -37,19 +38,20 @@ namespace server_side {
      * @param outputLength - length of the message
      * @return std::string - the message
      */
-    std::string recvMessageFromClient(const int outputLength) const;
+    std::string recvMessageFromClient(const int &outputLength) const;
     public:
     /**
      * @brief Construct a new Test Client Handler object
      * 
      * @param serverFd the file descriptor of the server
      */
-    TestClientHandler(const int serverFd);
+    TestClientHandler(const int &serverFd);
     /**
      * @brief talk with the client and solve his problem
      * 
      * @param client the client that the server talk with
      */
     void handleClient(const client_side::Client &client) const;
+    std::string formatAnswer(const std::string &answer, const int &status) const;
   };
 } // namespace server_side
