@@ -32,7 +32,8 @@ void TestClientHandler::handleClient(const client_side::Client &client) const{
   std::string command = recvMessageFromClient(commandLength), msg = "";
   int status = 0;
   if (command.substr(0, CLIENT_FIRST_INPUT_LEN) != CLIENT_FIRST_INPUT) {
-    status = 3;
+    //error
+    send(m_serverFd, msg.data(), msg.length(), 0);
     client.killClient();
     return;
   }

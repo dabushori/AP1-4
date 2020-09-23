@@ -10,7 +10,8 @@ private:
   Status m_status;
 
 public:
-  StatusException(Status status);
+  StatusException(const int &status);
+  StatusException(const Status &status);
   int getStatus();
 };
 } // namespace exceptions
