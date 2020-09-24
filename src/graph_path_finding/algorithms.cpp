@@ -288,12 +288,19 @@ std::string searchInGraph(std::string algorithm, std::string matrix,
     pos = matrix.find(toSearch, pos + replaceStr.size());
   }
 
-  toSearch = ";;";
-  replaceStr = ";";
-  pos = matrix.find(toSearch);
-  while (pos != std::string::npos) {
-    matrix.replace(pos, toSearch.size(), replaceStr);
-    pos = matrix.find(toSearch, pos + replaceStr.size());
+  bool flag = false;
+  while (!flag) {
+    toSearch = ";;";
+    replaceStr = ";";
+    pos = matrix.find(toSearch);
+    flag = true;
+    while (pos != std::string::npos) {
+      if (flag) {
+        flag = false;
+      }
+      matrix.replace(pos, toSearch.size(), replaceStr);
+      pos = matrix.find(toSearch, pos + replaceStr.size());
+    }
   }
 
   matrix = deleteSpacesFromMatrix(matrix);

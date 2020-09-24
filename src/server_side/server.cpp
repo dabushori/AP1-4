@@ -30,12 +30,10 @@ void threadFunction(ParallelServer *server, ClientHandler *c,
   while (true) {
     std::unique_lock<std::mutex> ul(server->m_mutex);
     server->m_queueEmpty.wait(ul);
-    std::cout << "NOTIFIED!" << std::endl;
     if (!server->m_clients.empty()) {
       client_side::Client client = server->m_clients.front();
       server->m_clients.pop();
       ul.unlock();
-      std::cout << "HANDLING!" << std::endl;
       c->handleClient(client, mutex);
     }
   }

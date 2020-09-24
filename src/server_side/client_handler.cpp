@@ -35,6 +35,9 @@ std::string deleteSpacesFromAlgorithm(std::string str) {
   str.erase(remove(str.begin(), str.end(), ' '), str.end());
   str.erase(remove(str.begin(), str.end(), '\t'), str.end());
   str.erase(remove(str.begin(), str.end(), '\0'), str.end());
+  str.erase(remove(str.begin(), str.end(), '\r'), str.end());
+  str.erase(remove(str.begin(), str.end(), '\n'), str.end());
+
   return str;
 }
 
@@ -54,7 +57,6 @@ void GraphClientHandler::handleClient(const client_side::Client &client,
     }
 
     algo = deleteSpacesFromAlgorithm(algo);
-
     std::regex algoCheck("BestFS|BFS|DFS");
 
     if (algo.empty() || algo == "A*") {
@@ -74,22 +76,6 @@ void GraphClientHandler::handleClient(const client_side::Client &client,
   std::string result = "";
   try {
     std::string matrix = recvMessageFromClient(1024);
-
-    std::string toSearch = "\r\n";
-    std::string replaceStr = ";";
-    size_t pos = matrix.find(toSearch);
-    while (pos != std::string::npos) {
-      matrix.replace(pos, toSearch.size(), replaceStr);
-      pos = matrix.find(toSearch, pos + replaceStr.size());
-    }
-
-    toSearch = ";;";
-    replaceStr = ";";
-    pos = matrix.find(toSearch);
-    while (pos != std::string::npos) {
-      matrix.replace(pos, toSearch.size(), replaceStr);
-      pos = matrix.find(toSearch, pos + replaceStr.size());
-    }
 
     result = algorithms::searchInGraph(algo, matrix, mutex);
   } catch (exceptions::StatusException &e) {
