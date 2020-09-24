@@ -271,10 +271,30 @@ std::string parseNeighborsLocation(const GraphNode &src,
 
 std::string searchInGraph(std::string algorithm, std::string matrix) {
   cache::Cache cache;
+
+  matrix.erase(remove_if(matrix.begin(), matrix.end(), isspace), matrix.end());
+
+  std::string toSearch = "\r\n";
+  std::string replaceStr = ";";
+  size_t pos = matrix.find(toSearch);
+  while (pos != std::string::npos) {
+    matrix.replace(pos, toSearch.size(), replaceStr);
+    pos = matrix.find(toSearch, pos + replaceStr.size());
+  }
+
+  toSearch = ";;";
+  replaceStr = ";";
+  pos = matrix.find(toSearch);
+  while (pos != std::string::npos) {
+    matrix.replace(pos, toSearch.size(), replaceStr);
+    pos = matrix.find(toSearch, pos + replaceStr.size());
+  }
+
   auto solution = cache.searchSolutionFor(algorithm, matrix);
   if (solution != "") {
     return solution;
   }
+
   auto matrixToSave = matrix;
 
   auto parsedMatrix = parseMatrix(matrix);
@@ -329,6 +349,10 @@ std::string searchInGraph(std::string algorithm, std::string matrix) {
   }
   message = std::to_string(cost) + "," + message;
 
+  // *******************
+  std::cout << algorithm.size() << std::endl;
+  std::cout << matrixToSave.size() << std::endl;
+  std::cout << message.size() << std::endl;
   cache.save(algorithm, matrixToSave, message);
 
   return message;

@@ -76,10 +76,9 @@ void GraphClientHandler::handleClient(const client_side::Client &client) {
         std::string(CLIENT_FIRST_INPUT)) {
       throw exceptions::StatusException(exceptions::Status::wrongInput);
     }
+
     algo.erase(remove_if(algo.begin(), algo.end(), isspace), algo.end());
     std::regex algoCheck("BestFS|BFS|DFS");
-
-    algo = parseAlgorithm(algo);
 
     if (algo.empty() || algo == "A*") {
       algo = DEFAULT_ALGORITHM;
