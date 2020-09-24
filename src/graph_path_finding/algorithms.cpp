@@ -277,7 +277,7 @@ std::string deleteSpacesFromMatrix(std::string str) {
 }
 
 std::string searchInGraph(std::string algorithm, std::string matrix,
-                          std::mutex *mutex = nullptr) {
+                          std::mutex *mutex) {
   cache::Cache cache;
 
   std::string toSearch = "\r\n";
