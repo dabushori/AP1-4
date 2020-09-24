@@ -19,11 +19,11 @@ int main(int argc, char *argv[]) {
 
   if (type == "parallel") {
     server_side::ParallelServer server;
-    server_side::GraphClientHandler handler(server.getFD());
+    server_side::GraphClientHandler handler;
     server.open(port, &handler);
   } else if (type == "serial") {
     server_side::SerialServer server;
-    server_side::GraphClientHandler handler(server.getFD());
+    server_side::GraphClientHandler handler;
     server.open(port, &handler);
   }
 }

@@ -8,8 +8,11 @@ void Server::open(const int port, ClientHandler *c) {
   }
   m_addr = sockaddr_in{};
   m_addr.sin_family = AF_INET;
-  m_addr.sin_addr.s_addr = INADDR_ANY;
-  m_addr.sin_port = htonl(port);
+  m_addr.sin_port = htons(port);
+  if (inet_aton(IP, &m_addr.sin_addr) == 0) {
+    close(m_serverFd);
+    throw std::system_error(errno, std::system_category());
+  }
   if (bind(m_serverFd, reinterpret_cast<sockaddr *>(&m_addr), sizeof(m_addr)) <
       0) {
     close(m_serverFd);

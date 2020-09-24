@@ -10,37 +10,24 @@
 namespace client_side {
 class Client {
 private:
-  sockaddr m_socket;
   int m_fd;
 
 public:
-/**
- * @brief Construct a new Client object
- * 
- * @param fd the file descriptor of the client.
- */
+  /**
+   * @brief Construct a new Client object
+   *
+   * @param fd the file descriptor of the client.
+   */
   Client(int fd);
   /**
-   * @brief sends to the server everything that the client write.
-   * 
-   * @return int - length of the message that the client sent. 
-   */
-  int inputToServer() const;
-  /**
-   * @brief the function recieve a message from the server and print it.
-   * 
-   * @param outputLength the length of the message
-   */
-  void recvMessageFromServer(const int outputLength) const;
-  /**
    * @brief Get the Fd object
-   * 
+   *
    * @return int - fd of the client
    */
   int getFd() const;
   /**
    * @brief close the fd of the client
-   * 
+   *
    */
   void killClient() const;
 };

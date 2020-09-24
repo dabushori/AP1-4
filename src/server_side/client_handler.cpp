@@ -2,10 +2,9 @@
 
 namespace server_side {
 
-ClientHandler::ClientHandler(const int &serverFd) : m_serverFd(serverFd) {}
+ClientHandler::ClientHandler() : m_serverFd(-1) {}
 
-GraphClientHandler::GraphClientHandler(const int &serverFd)
-    : ClientHandler(serverFd) {}
+GraphClientHandler::GraphClientHandler() : ClientHandler() {}
 
 std::string
 GraphClientHandler::recvMessageFromClient(const int &outputLength) const {
@@ -13,7 +12,6 @@ GraphClientHandler::recvMessageFromClient(const int &outputLength) const {
   const auto bytesRead =
       recv(m_serverFd, output.data(), output.length() - 1, 0);
   if (bytesRead < 0) {
-    close(m_serverFd);
     throw std::system_error(errno, std::system_category());
   }
   output[bytesRead] = '\0';
@@ -32,9 +30,11 @@ std::string GraphClientHandler::formatAnswer(const std::string &answer,
   format += "\r\n";
   return format;
 }
-void GraphClientHandler::handleClient(const client_side::Client &client) const {
-  int commandLength = client.inputToServer();
-  std::string command = recvMessageFromClient(commandLength), msg = "";
+void GraphClientHandler::handleClient(const client_side::Client &client) {
+
+  m_serverFd = client.getFd();
+
+  std::string command = recvMessageFromClient(1024), msg = "";
   int status = static_cast<int>(exceptions::Status::success);
   std::string algo = command.substr(CLIENT_FIRST_INPUT_LEN + 1);
   try {
@@ -52,30 +52,24 @@ void GraphClientHandler::handleClient(const client_side::Client &client) const {
     status = e.getStatus();
     std::string firstAnswer = formatAnswer(msg, status);
     send(m_serverFd, firstAnswer.data(), firstAnswer.length(), 0);
-    client.recvMessageFromServer(firstAnswer.length());
     client.killClient();
     return;
   }
   std::string firstAnswer = formatAnswer(msg, status);
   send(m_serverFd, firstAnswer.data(), firstAnswer.length(), 0);
-  client.recvMessageFromServer(firstAnswer.length());
   std::string result = "";
   try {
-    client.recvMessageFromServer(msg.length());
-    int matrixLength = client.inputToServer();
-    std::string matrix = recvMessageFromClient(matrixLength);
+    std::string matrix = recvMessageFromClient(1024);
     result = algorithms::searchInGraph(algo, matrix);
   } catch (exceptions::StatusException &e) {
     status = e.getStatus();
     std::string finalAnswer = formatAnswer(result, status);
     send(m_serverFd, finalAnswer.data(), finalAnswer.length(), 0);
-    client.recvMessageFromServer(finalAnswer.length());
     client.killClient();
     return;
   }
   std::string finalAnswer = formatAnswer(result, status);
   send(m_serverFd, finalAnswer.data(), finalAnswer.length(), 0);
-  client.recvMessageFromServer(finalAnswer.length());
   client.killClient();
 }
 } // namespace server_side

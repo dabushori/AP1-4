@@ -29,13 +29,13 @@ public:
    *
    * @param serverFd the file descriptor of the server
    */
-  ClientHandler(const int &serverFd);
+  ClientHandler();
   /**
    * @brief talk with the client and solve his problem
    *
    * @param client the client that the server talk with
    */
-  virtual void handleClient(const client_side::Client &client) const = 0;
+  virtual void handleClient(const client_side::Client &client) = 0;
 
   virtual ~ClientHandler() = default;
   ClientHandler(const ClientHandler &) = default;
@@ -60,13 +60,13 @@ public:
    *
    * @param serverFd the file descriptor of the server
    */
-  GraphClientHandler(const int &serverFd);
+  GraphClientHandler();
   /**
    * @brief talk with the client and solve his problem
    *
    * @param client the client that the server talk with
    */
-  void handleClient(const client_side::Client &client) const;
+  void handleClient(const client_side::Client &client);
   /**
    * @brief
    *
