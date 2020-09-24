@@ -7,6 +7,7 @@
 #include <iostream>
 #include <limits>
 #include <map>
+#include <mutex>
 #include <queue>
 #include <stack>
 #include <stdint.h>
@@ -464,5 +465,6 @@ std::string parseNeighborsLocation(const GraphNode &src, const GraphNode &dest);
  * @return std::string the result string in the format:
  * <path cost>,<algorithm>,<action 1>,...,<action n>
  */
-std::string searchInGraph(std::string algorithm, std::string matrix);
+std::string searchInGraph(std::string algorithm, std::string matrix,
+                          std::mutex *mutex);
 } // namespace algorithms

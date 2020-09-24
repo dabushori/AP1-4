@@ -38,7 +38,8 @@ std::string deleteSpacesFromAlgorithm(std::string str) {
   return str;
 }
 
-void GraphClientHandler::handleClient(const client_side::Client &client) {
+void GraphClientHandler::handleClient(const client_side::Client &client,
+                                      std::mutex *mutex) {
 
   m_serverFd = client.getFd();
 
@@ -90,7 +91,7 @@ void GraphClientHandler::handleClient(const client_side::Client &client) {
       pos = matrix.find(toSearch, pos + replaceStr.size());
     }
 
-    result = algorithms::searchInGraph(algo, matrix);
+    result = algorithms::searchInGraph(algo, matrix, mutex);
   } catch (exceptions::StatusException &e) {
     status = e.getStatus();
     std::string finalAnswer = formatAnswer(result, status);

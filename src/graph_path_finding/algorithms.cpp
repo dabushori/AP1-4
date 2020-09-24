@@ -276,7 +276,8 @@ std::string deleteSpacesFromMatrix(std::string str) {
   return str;
 }
 
-std::string searchInGraph(std::string algorithm, std::string matrix) {
+std::string searchInGraph(std::string algorithm, std::string matrix,
+                          std::mutex *mutex = nullptr) {
   cache::Cache cache;
 
   std::string toSearch = "\r\n";
@@ -297,7 +298,14 @@ std::string searchInGraph(std::string algorithm, std::string matrix) {
 
   matrix = deleteSpacesFromMatrix(matrix);
 
+  if (mutex != nullptr) {
+    mutex->lock();
+  }
   auto solution = cache.searchSolutionFor(algorithm, matrix);
+  if (mutex != nullptr) {
+    mutex->unlock();
+  }
+
   if (solution != "") {
     return solution;
   }
@@ -356,7 +364,14 @@ std::string searchInGraph(std::string algorithm, std::string matrix) {
   }
   message = std::to_string(cost) + "," + message;
 
+  if (mutex != nullptr) {
+    mutex->lock();
+  }
   cache.save(algorithm, matrixToSave, message);
+  if (mutex != nullptr) {
+    mutex->unlock();
+  }
+
   return message;
 }
 } // namespace algorithms

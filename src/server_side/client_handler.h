@@ -35,7 +35,8 @@ public:
    *
    * @param client the client that the server talk with
    */
-  virtual void handleClient(const client_side::Client &client) = 0;
+  virtual void handleClient(const client_side::Client &client,
+                            std::mutex *mutex) = 0;
 
   virtual ~ClientHandler() = default;
   ClientHandler(const ClientHandler &) = default;
@@ -66,7 +67,7 @@ public:
    *
    * @param client the client that the server talk with
    */
-  void handleClient(const client_side::Client &client);
+  void handleClient(const client_side::Client &client, std::mutex *mutex);
   /**
    * @brief
    *

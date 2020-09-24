@@ -25,23 +25,25 @@ void Server::open(const int port, ClientHandler *c) {
   talkWithClients(c);
 }
 
-void threadFunction(ParallelServer *server, ClientHandler *c) {
+void threadFunction(ParallelServer *server, ClientHandler *c,
+                    std::mutex *mutex) {
   while (true) {
-    client_side::Client client(0);
-    {
-      std::unique_lock<std::mutex> ul(server->m_mutex);
-      server->m_queueEmpty.wait(ul);
-      client = server->m_clients.front();
+    std::unique_lock<std::mutex> ul(server->m_mutex);
+    server->m_queueEmpty.wait(ul);
+    if (!server->m_clients.empty()) {
+      client_side::Client client = server->m_clients.front();
       server->m_clients.pop();
+      ul.unlock();
+      std::cout << "HANDLING!" << std::endl;
+      c->handleClient(client, mutex);
     }
-    c->handleClient(client);
   }
 }
 
 void ParallelServer::talkWithClients(ClientHandler *c) {
   std::thread threadPool[THREAD_POOL_SIZE];
   for (int i = 0; i < THREAD_POOL_SIZE; i++) {
-    threadPool[i] = std::thread(threadFunction, this, c);
+    threadPool[i] = std::thread(threadFunction, this, c, &m_cacheMutex);
   }
 
   while (true) {
@@ -56,6 +58,7 @@ void ParallelServer::talkWithClients(ClientHandler *c) {
     m_mutex.lock();
     m_clients.push(client);
     m_mutex.unlock();
+    std::cout << "NOTIFYING!" << std::endl;
     m_queueEmpty.notify_one();
   }
   killServer();
@@ -75,7 +78,7 @@ void SerialServer::talkWithClients(ClientHandler *c) {
       throw std::system_error(errno, std::system_category());
     }
     client_side::Client client(clientFd);
-    c->handleClient(client);
+    c->handleClient(client, nullptr);
   }
   killServer();
 }

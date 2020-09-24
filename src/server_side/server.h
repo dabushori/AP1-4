@@ -63,11 +63,13 @@ public:
 };
 
 class ParallelServer : public Server {
-  friend void threadFunction(ParallelServer *server, ClientHandler *c);
+  friend void threadFunction(ParallelServer *server, ClientHandler *c,
+                             std::mutex *mutex);
 
 private:
   std::queue<client_side::Client> m_clients;
   std::mutex m_mutex;
+  std::mutex m_cacheMutex;
   std::condition_variable m_queueEmpty;
 
 public:
@@ -84,8 +86,10 @@ public:
  * int the thread pool.
  *
  * @param c a clientHandler pointer that deal with a client
+ * @param mutex a mutex to deal with the cache file
  */
-void threadFunction(ParallelServer *server, ClientHandler *c);
+void threadFunction(ParallelServer *server, ClientHandler *c,
+                    std::mutex *mutex);
 
 class SerialServer : public Server {
 public:
