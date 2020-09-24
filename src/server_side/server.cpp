@@ -27,14 +27,14 @@ void Server::open(const int port, ClientHandler *c) {
 
 void threadFunction(ParallelServer *server, ClientHandler *c) {
   while (true) {
-    server->m_mutex.lock();
-    server->m_queueEmpty.wait(server->m_mutex);
-    if (!server->m_clients.empty()) {
-      client_side::Client client = server->m_clients.front();
+    client_side::Client client(0);
+    {
+      std::unique_lock<std::mutex> ul(server->m_mutex);
+      server->m_queueEmpty.wait(ul);
+      client = server->m_clients.front();
       server->m_clients.pop();
-      server->m_mutex.unlock();
-      c->handleClient(client);
     }
+    c->handleClient(client);
   }
 }
 
@@ -54,9 +54,9 @@ void ParallelServer::talkWithClients(ClientHandler *c) {
     }
     client_side::Client client(clientFd);
     m_mutex.lock();
-    m_queueEmpty.notify_one();
     m_clients.push(client);
     m_mutex.unlock();
+    m_queueEmpty.notify_one();
   }
   killServer();
 }

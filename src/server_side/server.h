@@ -67,7 +67,7 @@ class ParallelServer : public Server {
 
 private:
   std::queue<client_side::Client> m_clients;
-  std::unique_lock<std::mutex> m_mutex;
+  std::mutex m_mutex;
   std::condition_variable m_queueEmpty;
 
 public:

@@ -299,7 +299,6 @@ std::string searchInGraph(std::string algorithm, std::string matrix) {
 
   auto solution = cache.searchSolutionFor(algorithm, matrix);
   if (solution != "") {
-    std::cout << "FOUND IN CACHE!!!" << std::endl;
     return solution;
   }
 
@@ -357,6 +356,7 @@ std::string searchInGraph(std::string algorithm, std::string matrix) {
   }
   message = std::to_string(cost) + "," + message;
 
+  cache.save(algorithm, matrixToSave, message);
   return message;
 }
 } // namespace algorithms

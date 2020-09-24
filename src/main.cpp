@@ -10,20 +10,26 @@ int main(int argc, char *argv[]) {
     return 0;
   }
   int port = std::stoi(argv[1]);
-  std::string type = argv[2];
-  std::regex typeRegex("(parallel|serial)");
-  if (!std::regex_match(type, typeRegex)) {
-    std::cout << "wrong server type, try again" << std::endl;
-    return 0;
-  }
-
-  if (type == "parallel") {
+  if (argc == 2) {
     server_side::ParallelServer server;
     server_side::GraphClientHandler handler;
     server.open(port, &handler);
-  } else if (type == "serial") {
-    server_side::SerialServer server;
-    server_side::GraphClientHandler handler;
-    server.open(port, &handler);
+  } else {
+    std::string type = argv[2];
+    std::regex typeRegex("(parallel|serial)");
+    if (!std::regex_match(type, typeRegex)) {
+      std::cout << "wrong server type, try again" << std::endl;
+      return 0;
+    }
+
+    if (type == "parallel") {
+      server_side::ParallelServer server;
+      server_side::GraphClientHandler handler;
+      server.open(port, &handler);
+    } else if (type == "serial") {
+      server_side::SerialServer server;
+      server_side::GraphClientHandler handler;
+      server.open(port, &handler);
+    }
   }
 }
