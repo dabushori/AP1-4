@@ -239,9 +239,10 @@ std::vector<std::vector<int>> parseMatrix(std::string &matrix) {
 
   auto sizes = lines[0];
   auto sep = sizes.find_first_of(',');
-  int height = std::stoi(sizes.substr(0, sizes.length() - sep - 1));
+  int height = std::stoi(sizes.substr(0, sep));
   int width = std::stoi(sizes.substr(sep + 1));
   auto actualMat = textToMat(vals);
+
   if (static_cast<int>(actualMat.size()) != height ||
       static_cast<int>(actualMat[0].size()) != width) {
     throw exceptions::StatusException(exceptions::Status::wrongMatrix);
@@ -322,13 +323,14 @@ std::string searchInGraph(std::string algorithm, std::string matrix,
   auto parsedMatrix = parseMatrix(matrix);
 
   int sep = matrix.find_first_of(';');
-  std::string start = matrix.substr(0, matrix.length() - sep - 1);
+  std::string start = matrix.substr(0, sep);
   std::string end = matrix.substr(sep + 1);
 
   sep = start.find_first_of(',');
-  int startX = std::stoi(start.substr(0, start.length() - sep - 1));
+  int startX = std::stoi(start.substr(0, sep));
   int startY = std::stoi(start.substr(sep + 1));
-  int endX = std::stoi(end.substr(0, end.length() - sep - 1));
+  sep = end.find_first_of(',');
+  int endX = std::stoi(end.substr(0, sep));
   int endY = std::stoi(end.substr(sep + 1));
 
   Graph graph(parsedMatrix, parsedMatrix.size(), parsedMatrix[0].size());
