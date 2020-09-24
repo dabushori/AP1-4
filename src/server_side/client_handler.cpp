@@ -31,35 +31,10 @@ std::string GraphClientHandler::formatAnswer(const std::string &answer,
   return format;
 }
 
-bool isGood(char c) {
-  switch (c) {
-  case 'B':
-  case 'F':
-  case 'S':
-  case 'D':
-  case 'A':
-  case '*':
-  case 'e':
-  case 's':
-  case 't':
-    return true;
-    break;
-
-  default:
-    return false;
-    break;
-  }
-}
-
-std::string parseAlgorithm(std::string algorithm) {
-  std::string str = "";
-  for (char c : algorithm) {
-    if (isGood(c)) {
-      std::string character = "";
-      character += c;
-      str.append(character);
-    }
-  }
+std::string deleteSpacesFromAlgorithm(std::string str) {
+  str.erase(remove(str.begin(), str.end(), ' '), str.end());
+  str.erase(remove(str.begin(), str.end(), '\t'), str.end());
+  str.erase(remove(str.begin(), str.end(), '\0'), str.end());
   return str;
 }
 
@@ -77,7 +52,8 @@ void GraphClientHandler::handleClient(const client_side::Client &client) {
       throw exceptions::StatusException(exceptions::Status::wrongInput);
     }
 
-    algo.erase(remove_if(algo.begin(), algo.end(), isspace), algo.end());
+    algo = deleteSpacesFromAlgorithm(algo);
+
     std::regex algoCheck("BestFS|BFS|DFS");
 
     if (algo.empty() || algo == "A*") {

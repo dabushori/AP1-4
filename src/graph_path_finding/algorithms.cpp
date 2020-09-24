@@ -269,10 +269,15 @@ std::string parseNeighborsLocation(const GraphNode &src,
   return "";
 }
 
+std::string deleteSpacesFromMatrix(std::string str) {
+  str.erase(remove(str.begin(), str.end(), ' '), str.end());
+  str.erase(remove(str.begin(), str.end(), '\t'), str.end());
+  str.erase(remove(str.begin(), str.end(), '\0'), str.end());
+  return str;
+}
+
 std::string searchInGraph(std::string algorithm, std::string matrix) {
   cache::Cache cache;
-
-  matrix.erase(remove_if(matrix.begin(), matrix.end(), isspace), matrix.end());
 
   std::string toSearch = "\r\n";
   std::string replaceStr = ";";
@@ -290,8 +295,11 @@ std::string searchInGraph(std::string algorithm, std::string matrix) {
     pos = matrix.find(toSearch, pos + replaceStr.size());
   }
 
+  matrix = deleteSpacesFromMatrix(matrix);
+
   auto solution = cache.searchSolutionFor(algorithm, matrix);
   if (solution != "") {
+    std::cout << "FOUND IN CACHE!!!" << std::endl;
     return solution;
   }
 
@@ -348,12 +356,6 @@ std::string searchInGraph(std::string algorithm, std::string matrix) {
     }
   }
   message = std::to_string(cost) + "," + message;
-
-  // *******************
-  std::cout << algorithm.size() << std::endl;
-  std::cout << matrixToSave.size() << std::endl;
-  std::cout << message.size() << std::endl;
-  cache.save(algorithm, matrixToSave, message);
 
   return message;
 }
