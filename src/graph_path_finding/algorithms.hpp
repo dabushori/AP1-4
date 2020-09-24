@@ -278,6 +278,13 @@ public:
           node = (*graph)(node->getSourceI(), node->getSourceJ());
         }
         path.emplace(path.begin(), *node);
+
+        std::cout << "path size of DFS: " << path.size() << std::endl;
+
+        for (auto p : path) {
+          std::cout << p.getSourceI() << "," << p.getSourceJ() << std::endl;
+        }
+
         return path;
       }
       for (auto neighbor : graph->getNeighbors(&current)) {

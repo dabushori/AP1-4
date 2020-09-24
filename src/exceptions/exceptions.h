@@ -9,7 +9,9 @@ enum class Status {
   wrongMatrix,
   wrongInput,
   noCacheDir,
-  cacheFileError
+  cacheFileError,
+  timeoutPassed
+
 };
 
 class StatusException : public std::exception {

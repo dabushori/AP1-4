@@ -17,6 +17,7 @@
 * Status: 3 - wrongInput
 * Status: 4 - noCacheDir
 * Status: 5 - cacheFileError
+* Status: 6 - timeoutPassed
 * If any server function did not work (socket, bind, accept .... ) we will return errno error (system_category).
 * * *
 ## Files:
