@@ -24,8 +24,8 @@ bool GraphNode::operator==(const GraphNode &other) const {
 bool GraphNode::operator!=(const GraphNode &other) const {
   return (m_i != other.m_i) || (m_j != other.m_j);
 }
-Graph::Graph(std::vector<std::vector<int>> graph, uint32_t height,
-             uint32_t width) {
+Graph::Graph(std::vector<std::vector<int>> graph, const uint32_t &height,
+             const uint32_t &width) {
   std::vector<std::vector<GraphNode>> nodes;
   for (uint32_t i = 0; i < height; ++i) {
     std::vector<GraphNode> line;

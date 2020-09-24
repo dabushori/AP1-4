@@ -1,7 +1,7 @@
 #include "server.h"
 
 namespace server_side {
-void Server::open(const int port, ClientHandler *c) {
+void Server::open(const int &port, ClientHandler *c) {
   m_serverFd = socket(AF_INET, SOCK_STREAM, 0);
   if (m_serverFd < 0) {
     throw std::system_error(errno, std::system_category());
@@ -41,7 +41,7 @@ void threadFunction(ParallelServer *server, ClientHandler *c,
 
 void ParallelServer::talkWithClients(ClientHandler *c) {
   std::thread threadPool[THREAD_POOL_SIZE];
-  for (int i = 0; i < THREAD_POOL_SIZE; i++) {
+  for (int i = 0; i < THREAD_POOL_SIZE; ++i) {
     threadPool[i] = std::thread(threadFunction, this, c, &m_cacheMutex);
   }
 

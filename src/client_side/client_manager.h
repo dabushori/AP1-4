@@ -18,7 +18,7 @@ public:
    *
    * @param fd the file descriptor of the client.
    */
-  Client(int fd);
+  Client(const int &fd);
   /**
    * @brief Get the Fd object
    *

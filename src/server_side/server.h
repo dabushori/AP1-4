@@ -35,7 +35,7 @@ public:
    * @param port the port of the server
    * @param c a ClientHandle pointer that deal with a client
    */
-  virtual void open(const int port, ClientHandler *c);
+  virtual void open(const int &port, ClientHandler *c);
   /**
    * @brief connect the server to clients and solve their problems
    *
@@ -53,6 +53,10 @@ public:
    * @return int the FD of the server
    */
   int getFD() const;
+  /**
+   * @brief Construct a new Server object
+   *
+   */
   Server() = default;
   // no use just for the rule of 5
   virtual ~Server() = default;
@@ -100,6 +104,11 @@ public:
    * @param c a ClientHandler pointer that deal with a client
    */
   void talkWithClients(ClientHandler *c);
+
+  /**
+   * @brief Construct a new Serial Server object
+   *
+   */
   SerialServer() = default;
 };
 } // namespace server_side

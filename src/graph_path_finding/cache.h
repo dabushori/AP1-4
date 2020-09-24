@@ -30,7 +30,8 @@ public:
    * @param problem the problem
    * @param solution the solution
    */
-  void save(std::string algorithm, std::string problem, std::string solution);
+  void save(const std::string &algorithm, const std::string &problem,
+            const std::string &solution);
 
   /**
    * @brief look for the solution to a given problem in the cache
@@ -39,7 +40,8 @@ public:
    * @param problem the problem
    * @return std::string the result (an empty string if it doesn't in the cache)
    */
-  std::string searchSolutionFor(std::string alorithm, std::string problem);
+  std::string searchSolutionFor(const std::string &alorithm,
+                                const std::string &problem);
 
   /**
    * @brief a method to clear the cache

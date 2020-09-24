@@ -1,7 +1,7 @@
 #include "client_manager.h"
 
 namespace client_side {
-Client::Client(int fd) : m_fd(fd) {}
+Client::Client(const int &fd) : m_fd(fd) {}
 
 int Client::getFd() const { return m_fd; }
 

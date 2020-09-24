@@ -142,7 +142,8 @@ public:
    * @param height the height of the graph
    * @param width the width of the graph
    */
-  Graph(std::vector<std::vector<int>> graph, uint32_t height, uint32_t width);
+  Graph(std::vector<std::vector<int>> graph, const uint32_t &height,
+        const uint32_t &width);
 
   /**
    * @brief get the value in the i,j cell
@@ -160,7 +161,19 @@ public:
    * @return std::vector<GraphNode *> vector of pointers to the neighbors
    */
   std::vector<GraphNode *> getNeighbors(GraphNode *current);
+
+  /**
+   * @brief Get the Height
+   *
+   * @return uint32_t the Height
+   */
   uint32_t getHeight();
+
+  /**
+   * @brief Get the Width
+   *
+   * @return uint32_t the Width
+   */
   uint32_t getWidth();
 }; // namespace algorithms
 
