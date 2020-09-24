@@ -1,15 +1,15 @@
 #pragma once
 
-#include "client_manager.h"
-// #include "server.h"
 #include "algorithms.hpp"
+#include "client_manager.h"
 #include "exceptions.h"
 
 #include <regex>
 
 constexpr auto DEFAULT_ALGORITHM = "A*";
-constexpr auto CLIENT_FIRST_INPUT = "solve path-graph-find";
+constexpr auto CLIENT_FIRST_INPUT = "solve find-graph-path";
 constexpr auto CLIENT_FIRST_INPUT_LEN = 21;
+constexpr auto ALGO_MAX_LEN = 6;
 
 namespace server_side {
 class ClientHandler {
